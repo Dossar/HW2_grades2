@@ -1,0 +1,17 @@
+Student: John Doe
+quiz 1: 60
+quiz 2: 75
+midterm exam: 80
+final exam: 90
+
+Student: Jane Roe
+quiz 1: 80
+quiz 2: 85
+midterm exam: 70
+final exam: 75
+
+Student: Joe Shmoe
+quiz 1: 90
+quiz 2: 85
+midterm exam: 87
+final exam: 85
