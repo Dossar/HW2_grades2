@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 using namespace std;
 
@@ -16,8 +17,8 @@ class Student
 {
     
 public:
-    void input();
-    void output();
+    void input(int);
+    void output(int);
     // These are 4 static accessor (get) functions for each quiz weight.
     static int getQ1w() //static member function
     { return qweight[0]; }
@@ -29,7 +30,7 @@ public:
     { return qweight[3]; }
 
 private:
-    char name[50]; // Name of the student, max 50 characters.
+    string sname; // Name of the student.
     int qgrade[4]; // Each array cell indicates the quiz number's grade.
     static int qweight[4]; // Each array cell indicates the quiz number's weight.
     // 0 for quiz1, 1 for quiz2, 2 for midterm, 3 for final exam.
@@ -88,68 +89,132 @@ private:
 };
 
 // Initialize our static quiz weights respectively.
-int Student::qweight[4] = { 10, 20, 30, 40 };	
+int Student::qweight[4] = { 10, 20, 30, 40 };
+    Student sGrade[3]; // Three students are getting grades evaluated
 
 // Input grades
-void Student::input(){   
+void Student::input(int n){   
 
-    int choice = 1;  // This is to get the while loop working
-    while (choice != 0)
+    // In this case the user is entering the input
+    if( n == 2 )
     {
-        cout << "\nInput Grades for student.\n";
-        cout << "0 - Don't change any more grades\n";
-        cout << "1 - Change Quiz #1 grade\n";
-        cout << "2 - Change Quiz #2 grade\n";
-        cout << "3 - Change Midterm Exam grade\n";
-        cout << "4 - Change Final Exam grade\n";
-
-        cout << "Please select an item from the menu list: ";
-        cin >> choice;
-
-        switch (choice)
+        int choice = 1;  // This is to get the while loop working
+        while (choice != 0)
         {
-        case 0:	
-                cout << "Going back to main menu.\n";
-                break;
-        // For cases 1-4, user inputs new grade, then average is recalculated.
-        case 1:	
-                qgr1();
-                calc_ave();
-                calc_letter();
-		break;
-        case 2:	
-                qgr2();
-                calc_ave();
-                calc_letter();
-		break;                
-        case 3:	
-                qgr3();
-                calc_ave();
-                calc_letter();                
-		break;
-        case 4:	
-                qgr4();
-                calc_ave();
-                calc_letter();                
-		break;		
-        default:
-                cout << "\nInvalid input.\n";
+            cout << "\nInput Grades for " << sname << ".\n";
+            cout << "0 - Don't change any more grades for " << sname << "\n";
+            cout << "1 - Change Quiz #1 grade\n";
+            cout << "2 - Change Quiz #2 grade\n";
+            cout << "3 - Change Midterm Exam grade\n";
+            cout << "4 - Change Final Exam grade\n";
+
+            cout << "Please select an item from the menu list: ";
+            cin >> choice;
+
+            switch (choice)
+            {
+            case 0:	
+                    cout << "Going back to main menu.\n";
+                    break;
+            // For cases 1-4, user inputs new grade, then average is recalculated.
+            case 1:	
+                    qgr1();
+                    calc_ave();
+                    calc_letter();
+                    break;
+            case 2:	
+                    qgr2();
+                    calc_ave();
+                    calc_letter();
+                    break;                
+            case 3:	
+                    qgr3();
+                    calc_ave();
+                    calc_letter();                
+                    break;
+            case 4:	
+                    qgr4();
+                    calc_ave();
+                    calc_letter();                
+                    break;		
+            default:
+                    cout << "\nInvalid input.\n";
+            }
         }
-    }    
+        cout << sname << "'s grades were successfully entered.\n";
+    }
+    // End user input
+    
+    // In this case the input is received from the text file
+    if( n == 1 )
+    {
+        int q; // For getline on the quiz parts.
+        string quizstr[4]; // From a text file, the grades are strings.
+        
+        /*      The format of the text file is basically this:
+                - Name \n
+                - Quiz \n (4 lines)
+                - Newline gap to next name */
+    
+        ifstream in("input.txt");
+        string sdata; // String storing variable for the getline stuff.
+        
+        // This while loop is basically saying "get each line until end of file is reached".
+        while (getline(in, sdata)) {
+
+             // getline in the while condition is for the name.
+             std::size_t found = sdata.find(": "); // Search for ": " string
+             sGrade[n-1].sname = sdata.substr(found + 2); // Save everything after ": " into sname string.
+             cout << sGrade[n-1].sname << endl;
+
+             // Store the four quiz grades.
+             for( q = 0 ; q < 4 ; q++ ) {
+                getline(in, sdata); 
+                std::size_t found = sdata.find(": "); // Search for ": " string
+                quizstr[q] = sdata.substr(found + 2); // Save everything after ": " into qgrade string.      
+                cout << quizstr[q] << endl;
+             }
+             cout << "\n"; // This is simply for formatting
+
+            // Now we need to convert the quiz strings into integers.
+            for (q = 0; q < 4; q++) {
+                std::istringstream tempgrade(quizstr[q]);
+                tempgrade >> sGrade[n - 1].qgrade[q]; // Store quiz integer value into current student.
+                cout << sGrade[n - 1].qgrade[q] << "\n";
+            }
+
+             // Recalculate the students' grade.
+             sGrade[n-1].calc_ave();
+             sGrade[n-1].calc_letter();
+             getline(in, sdata); // Compensate for newline gap format in text file
+             
+             n++;
+         } // End of while loop
+        
+
+    }
+    // End file input
         
 }
     
 
 
 // Output all the students' grades.
-void Student::output(){
+void Student::output(int n){
     
-    cout << "Quiz 1: " << Student::qgrade[0] << " weighted " << Student::qweight[0] << "%\n";
-    cout << "Quiz 2: " << Student::qgrade[1] << " weighted " << Student::qweight[1] << "%\n";
-    cout << "Miderm Exam: " << Student::qgrade[2] << " weighted " << Student::qweight[2] << "%\n";
-    cout << "Final Exam: " << Student::qgrade[3] << " weighted " << Student::qweight[3] << "%\n";
-    cout << "This student scored " << Student::avweight << " and got a "
-            << Student::lettergrade << " grade for the course.\n";
+    if( n == 2 )
+    {
+    cout << sname << "'s grades are:\n";
+    cout << "Quiz 1: " << qgrade[0] << " weighted " << qweight[0] << "%\n";
+    cout << "Quiz 2: " << qgrade[1] << " weighted " << qweight[1] << "%\n";
+    cout << "Miderm Exam: " << qgrade[2] << " weighted " << qweight[2] << "%\n";
+    cout << "Final Exam: " << qgrade[3] << " weighted " << qweight[3] << "%\n";
+    cout << sname << " scored " << avweight << " and got a "
+            << lettergrade << " grade for the course.\n";
+    }
+    
+    if( n == 1 )
+        return;
     
 }
 
@@ -181,8 +246,8 @@ void Student::calc_letter(){
  */
 int main() {
     
-    Student sGrade[3]; // Three students are getting grades evaluated
-    int s; // For the students in the loops
+    int s = 0; // For the students in the loops
+    int user = 3; // For deciding inputs and outputs
 
     int choice = 1;  // This is to get the while loop working
     while (choice != 0)
@@ -201,22 +266,34 @@ int main() {
         case 0:	
             cout << "Thank you for your time.\n";
 			break;
-        case 1:	
-            for( s = 0 ; s < 3 ; s++ )
-            {
-                cout << "\nPlease input student " << (s+1) << "'s grades.\n";
-                cout << "Grades should be integers between 0 and 100.\n";
-                sGrade[s].input();
-                cout << "Student " << (s+1) << "'s grades successfully entered.\n";
-            }
-			break;
+        case 1:
+                user = 3;
+                while (user != 2 && user != 1) {
+                    cout << "Enter 1 for text file input, 2 for user input.\n";
+                    cin >> user;
+                    cout << "\n";
+                }
+                if (user == 1)
+                    sGrade[0].input(user);
+                else for (s = 0; s < 3; s++) {
+                        sGrade[s].input(user);
+                    }
+	    break;
 	
-        case 2:	
-            for( s = 0 ; s < 3 ; s++ )
-            {
-                cout << "\nStudent " << (s+1) << "'s grades are:\n";
-                sGrade[s].output();
-            }
+        case 2:
+                user = 3;
+                while (user != 2 && user != 1) {
+                    cout << "Enter 1 for text file output, 2 for console output.\n";
+                    cin >> user;
+                    cout << "\n";
+                }
+                if( user == 2 )
+                        for( s = 0 ; s < 3 ; s++ )
+                        {
+                                sGrade[s].output(user);
+                        }
+                else
+                    sGrade[0].output(user);
 			break;
 		
         default:
