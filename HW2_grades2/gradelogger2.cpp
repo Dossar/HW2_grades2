@@ -115,22 +115,22 @@ void Student::input(int n){
              // getline in the while condition is for the name.
              std::size_t found = sdata.find(": "); // Search for ": " string
              sGrade[n-1].sname = sdata.substr(found + 2); // Save everything after ": " into sname string.
-             cout << sGrade[n-1].sname << endl;
+             // cout << sGrade[n-1].sname << endl;
 
              // Store the four quiz grades.
              for( q = 0 ; q < 4 ; q++ ) {
                 getline(in, sdata); 
                 std::size_t found = sdata.find(": "); // Search for ": " string
                 quizstr[q] = sdata.substr(found + 2); // Save everything after ": " into qgrade string.      
-                cout << quizstr[q] << endl;
+                // cout << quizstr[q] << endl;
              }
-             cout << "\n"; // This is simply for formatting
+             // cout << "\n"; // This is simply for formatting
 
             // Now we need to convert the quiz strings into integers.
             for (q = 0; q < 4; q++) {
                 std::istringstream tempgrade(quizstr[q]);
                 tempgrade >> sGrade[n - 1].qgrade[q]; // Store quiz integer value into current student.
-                cout << sGrade[n - 1].qgrade[q] << "\n";
+                // cout << sGrade[n - 1].qgrade[q] << "\n";
             }
 
              // Recalculate the students' grade.
@@ -163,8 +163,45 @@ void Student::output(int n){
             << lettergrade << " grade for the course.\n\n";
     }
     
+    // If 1 was entered, we write the data to an output text file.
     if( n == 1 )
-        return;
+    {
+        ofstream write("output.txt"); // write here will be used to insert text into our output file
+        int s, t; // s for students, t for the quiz counter
+        string numoutput; // string for containing the number to output to .txt file
+        ostringstream convert; // stream used for the conversion from integer to string
+        for (s = 0; s < 3; s++) {
+            t = 0; // t here is the variable that states which quiz grade to print out.
+            write << "Student: " << sGrade[s].sname << "\n";
+            convert << sGrade[s].qgrade[t]; // Insert text representation of the grade into stream
+            numoutput = convert.str(); // Set the string to the contents of the stream.
+            write << "quiz 1: " << numoutput << "\n";
+            t++; // Go to the next quiz index.
+            convert.str(""); // Clear the contents of the stream. This must be done every time.
+            numoutput.clear(); // Clear the contents of the string. This must be done every time.
+            convert << sGrade[s].qgrade[t];
+            numoutput = convert.str();
+            write << "quiz 2: " << numoutput << "\n";
+            t++;
+            convert.str("");
+            numoutput.clear();
+            convert << sGrade[s].qgrade[t];
+            numoutput = convert.str();
+            write << "midterm exam: " << numoutput << "\n";
+            t++;
+            convert.str("");
+            numoutput.clear();
+            convert << sGrade[s].qgrade[t];
+            numoutput = convert.str();
+            write << "final exam: " << numoutput << "\n\n";
+            convert.str("");
+            numoutput.clear();
+        }
+
+        write.close(); // Close our output file, we're done writing its contents
+        cout << "Grades have been written to output.txt\n\n";
+        
+    }
     
 }
 
@@ -196,59 +233,58 @@ void Student::calc_letter(){
  * 
  */
 int main() {
-    
+
+    cout << "\nPlease load from the input file first for student grades.\n\n";
     int s = 0; // For the students in the loops
     int user = 3; // For deciding inputs and outputs
 
-    int choice = 1;  // This is to get the while loop working
-    while (choice != 0)
-    {
-        cout << "\nStudent Grade Evaluator\n";
+    int choice = 1; // This is to get the while loop working
+    while (choice != 0) {
+        cout << "Student Grade Evaluator\n";
         cout << "This program enters grades for 3 students and calculates them.\n";
         cout << "0 - Quit Program\n";
         cout << "1 - Input Grades\n";
-        cout << "2 - Output Grades\n";		
+        cout << "2 - Output Grades\n";
 
         cout << "Please select an item from the menu list: ";
         cin >> choice;
 
-        switch (choice)
-        {
-        case 0:	
-            cout << "Thank you for your time.\n";
-			break;
-        case 1:
+        switch (choice) {
+            case 0:
+                cout << "Thank you for your time.\n";
+                break;
+            case 1:
                 user = 3;
                 while (user != 2 && user != 1) {
                     cout << "Enter 1 for text file input, 2 for user input.\n";
                     cin >> user;
                     cout << "\n";
                 }
-                if (user == 1)
+                if (user == 1) {
                     sGrade[0].input(user);
-                else for (s = 0; s < 3; s++) {
+                    cout << "Grades have been read from input file.\n\n";
+                } else for (s = 0; s < 3; s++) {
                         sGrade[s].input(user);
                     }
-	    break;
-	
-        case 2:
+                break;
+
+            case 2:
                 user = 3;
                 while (user != 2 && user != 1) {
                     cout << "Enter 1 for text file output, 2 for console output.\n";
                     cin >> user;
                     cout << "\n";
                 }
-                if( user == 2 )
-                        for( s = 0 ; s < 3 ; s++ )
-                        {
-                                sGrade[s].output(user);
-                        }
-                else
+                if (user == 2)
+                    for (s = 0; s < 3; s++) {
+                        sGrade[s].output(user);
+                    } else {
                     sGrade[0].output(user);
-			break;
-		
-        default:
-            cout << "\nInvalid input.\n";
+                }
+                break;
+
+            default:
+                cout << "\nInvalid input.\n";
         }
     }
     
