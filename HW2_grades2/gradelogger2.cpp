@@ -1,11 +1,12 @@
 /* 
- * File:   gradelogger.cpp
+ * File:   gradelogger2.cpp
  * Author: Roy Van Liew
  *
- * Created on January 29, 2014, 12:01 PM
+ * Created on February 5, 2014
  */
 
-// Code works but calc_ave and calc_letter are not void.
+// Input functions work. File input also works when user asks to read from file again.
+// What needs to be done now is file output.
 
 #include <iostream>
 #include <fstream>
@@ -37,45 +38,12 @@ private:
     double avweight;
     char lettergrade;
     //// Start grade mutator (set) functions ////
-    void qgr1(){
+    void qgr(int n){
         int gCheck = 1;
         while(gCheck == 1){
-            cout << "Input grade for Quiz #1: ";
-            cin >> qgrade[0];
-            if(qgrade[0] >= 0 && qgrade[0] <= 100)
-                gCheck = 0;
-            else
-                cout << "Invalid grade, please try again.\n";
-        }
-    }
-    void qgr2(){
-        int gCheck = 1;
-        while(gCheck == 1){
-            cout << "Input grade for Quiz #2: ";
-            cin >> qgrade[1];
-            if(qgrade[1] >= 0 && qgrade[1] <= 100)
-                gCheck = 0;
-            else
-                cout << "Invalid grade, please try again.\n";
-        }
-    }
-    void qgr3(){
-        int gCheck = 1;
-        while(gCheck == 1){
-            cout << "Input grade for Midterm Exam: ";
-            cin >> qgrade[2];
-            if(qgrade[2] >= 0 && qgrade[2] <= 100)
-                gCheck = 0;
-            else
-                cout << "Invalid grade, please try again.\n";
-        }
-    }
-    void qgr4(){
-        int gCheck = 1;
-        while(gCheck == 1){
-            cout << "Input grade for Final Exam: ";
-            cin >> qgrade[3];
-            if(qgrade[3] >= 0 && qgrade[3] <= 100)
+            cout << "Input grade for this assessment: ";
+            cin >> qgrade[n];
+            if(qgrade[n] >= 0 && qgrade[n] <= 100)
                 gCheck = 0;
             else
                 cout << "Invalid grade, please try again.\n";
@@ -101,7 +69,7 @@ void Student::input(int n){
         int choice = 1;  // This is to get the while loop working
         while (choice != 0)
         {
-            cout << "\nInput Grades for " << sname << ".\n";
+            cout << "Input Grades for " << sname << "\n";
             cout << "0 - Don't change any more grades for " << sname << "\n";
             cout << "1 - Change Quiz #1 grade\n";
             cout << "2 - Change Quiz #2 grade\n";
@@ -110,38 +78,20 @@ void Student::input(int n){
 
             cout << "Please select an item from the menu list: ";
             cin >> choice;
+          
 
-            switch (choice)
-            {
-            case 0:	
-                    cout << "Going back to main menu.\n";
-                    break;
+            if( choice == 0 )
+                break;
             // For cases 1-4, user inputs new grade, then average is recalculated.
-            case 1:	
-                    qgr1();
+            else if( choice > 0 && choice < 5 ) {
+                    qgr(choice-1); // The -1 is for the index
                     calc_ave();
                     calc_letter();
-                    break;
-            case 2:	
-                    qgr2();
-                    calc_ave();
-                    calc_letter();
-                    break;                
-            case 3:	
-                    qgr3();
-                    calc_ave();
-                    calc_letter();                
-                    break;
-            case 4:	
-                    qgr4();
-                    calc_ave();
-                    calc_letter();                
-                    break;		
-            default:
-                    cout << "\nInvalid input.\n";
             }
+            else cout << "\nInvalid input.\n";
+            
         }
-        cout << sname << "'s grades were successfully entered.\n";
+        cout << "Grades successfully entered for " << sname << "\n\n";
     }
     // End user input
     
@@ -204,13 +154,13 @@ void Student::output(int n){
     
     if( n == 2 )
     {
-    cout << sname << "'s grades are:\n";
+    cout << "Here are the grades for " << sname << "\n";
     cout << "Quiz 1: " << qgrade[0] << " weighted " << qweight[0] << "%\n";
     cout << "Quiz 2: " << qgrade[1] << " weighted " << qweight[1] << "%\n";
     cout << "Miderm Exam: " << qgrade[2] << " weighted " << qweight[2] << "%\n";
     cout << "Final Exam: " << qgrade[3] << " weighted " << qweight[3] << "%\n";
-    cout << sname << " scored " << avweight << " and got a "
-            << lettergrade << " grade for the course.\n";
+    cout << "This student scored " << avweight << " and got a "
+            << lettergrade << " grade for the course.\n\n";
     }
     
     if( n == 1 )
@@ -222,8 +172,9 @@ void Student::output(int n){
 void Student::calc_ave(){
 
     int i;
+    avweight = 0; // Reinitialize to zero in case of changed grades
     for (i = 0; i < 4; i++) {
-        avweight += (double) (Student::qgrade[i] * (Student::qweight[i] / 100.0)); // Add up all weighted scores
+        avweight += (double)(Student::qgrade[i] * (Student::qweight[i] / 100.0)); // Add up all weighted scores
     }
 }
 
