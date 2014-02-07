@@ -5,8 +5,7 @@
  * Created on February 5, 2014
  */
 
-// Input functions work. File input also works when user asks to read from file again.
-// What needs to be done now is file output.
+// Mutator and accessor functions are public.
 
 #include <iostream>
 #include <fstream>
@@ -20,7 +19,7 @@ class Student
 public:
     void input(int);
     void output(int);
-    // These are 4 static accessor (get) functions for each quiz weight.
+    /***** These are 4 static accessor (get) functions for each quiz weight. *****/
     static int getQ1w() //static member function
     { return qweight[0]; }
     static int getQ2w() //static member function
@@ -29,15 +28,9 @@ public:
     { return qweight[2]; }
     static int getQ4w() //static member function
     { return qweight[3]; }
-
-private:
-    string sname; // Name of the student.
-    int qgrade[4]; // Each array cell indicates the quiz number's grade.
-    static int qweight[4]; // Each array cell indicates the quiz number's weight.
-    // 0 for quiz1, 1 for quiz2, 2 for midterm, 3 for final exam.
-    double avweight;
-    char lettergrade;
-    //// Start grade mutator (set) functions ////
+    /***** End accessor functions *****/
+    
+    /***** Start grade mutator (set) functions *****/
     void qgr(int n){
         int gCheck = 1;
         while(gCheck == 1){
@@ -49,7 +42,15 @@ private:
                 cout << "Invalid grade, please try again.\n";
         }
     }
-    //// End grade mutator (set) functions ////
+    /***** End grade mutator (set) functions *****/
+
+private:
+    string sname; // Name of the student.
+    int qgrade[4]; // Each array cell indicates the quiz number's grade.
+    static int qweight[4]; // Each array cell indicates the quiz number's weight.
+    // 0 for quiz1, 1 for quiz2, 2 for midterm, 3 for final exam.
+    double avweight;
+    char lettergrade;
 
     void calc_ave();
     void calc_letter();
@@ -295,5 +296,5 @@ int main() {
     }
     
     return 0;
+    
 }
-
