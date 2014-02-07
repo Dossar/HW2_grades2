@@ -1,7 +1,7 @@
 /* 
  * File:   gradelogger2.cpp
- * Author: Roy Van Liew
- *
+ * Author: Roy Van Liew and Saqib Zahid
+ * 
  * Created on February 5, 2014
  */
 
@@ -154,13 +154,16 @@ void Student::output(int n){
     
     if( n == 2 )
     {
-    cout << "Here are the grades for " << sname << "\n";
-    cout << "Quiz 1: " << qgrade[0] << " weighted " << qweight[0] << "%\n";
-    cout << "Quiz 2: " << qgrade[1] << " weighted " << qweight[1] << "%\n";
-    cout << "Miderm Exam: " << qgrade[2] << " weighted " << qweight[2] << "%\n";
-    cout << "Final Exam: " << qgrade[3] << " weighted " << qweight[3] << "%\n";
-    cout << "This student scored " << avweight << " and got a "
-            << lettergrade << " grade for the course.\n\n";
+        cout.setf(ios::fixed);
+        cout.setf(ios::showpoint);
+        cout.precision(1); // Output with one decimal point of precision.
+        cout << "Here are the grades for " << sname << "\n";
+        cout << "Quiz 1: " << qgrade[0] << " weighted " << qweight[0] << "%\n";
+        cout << "Quiz 2: " << qgrade[1] << " weighted " << qweight[1] << "%\n";
+        cout << "Miderm Exam: " << qgrade[2] << " weighted " << qweight[2] << "%\n";
+        cout << "Final Exam: " << qgrade[3] << " weighted " << qweight[3] << "%\n";
+        cout << "This student scored " << avweight << " and got a "
+                << lettergrade << " grade for the course.\n\n";
     }
     
     // If 1 was entered, we write the data to an output text file.
@@ -234,7 +237,10 @@ void Student::calc_letter(){
  */
 int main() {
 
-    cout << "\nPlease load from the input file first for student grades.\n\n";
+    cout << "\nPlease load from the input file first for student grades.\n";
+    // Test the accessor functions for the weights.
+    cout << "Quiz weights already included: " << Student::getQ1w() << "%, " << Student::getQ2w()
+         << "%, " << Student::getQ3w() << "%, and " << Student::getQ4w() << "%." << endl;
     int s = 0; // For the students in the loops
     int user = 3; // For deciding inputs and outputs
 
