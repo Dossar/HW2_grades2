@@ -88,6 +88,7 @@ void Student::input(int n){
                     qgr(choice-1); // The -1 is for the index
                     calc_ave();
                     calc_letter();
+                    cout << "\n";
             }
             else cout << "\nInvalid input.\n";
             
